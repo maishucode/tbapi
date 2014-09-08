@@ -1,0 +1,289 @@
+<style type="text/css" media="screen">
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    text-align: center
+}
+
+#container {
+    width: 80%;
+    margin: 10px auto;
+    text-align: left
+}
+
+header {
+    margin: 20px 0;
+    text-align: center;
+    font-size: 40px
+}
+
+p {
+    margin-bottom: 20px
+}
+
+a:link, a:visited {
+    color: #2d4ecc
+}
+
+a:hover {
+    color: #587ffb
+}
+
+strong {
+    color: #666
+}
+
+h1 {
+    font-size: 30px
+}
+
+h2 {
+    font-size: 30px
+}
+
+h3 {
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 10px;
+    margin-top: 30px;
+    color: #111
+}
+
+.key {
+    color: #d9480a
+}
+
+pre {
+    background: #f0f0f0;
+    padding: 10px;
+    font-size: 11px;
+    font-family: Monaco, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    overflow: scroll
+}
+
+pre em {
+    color: #999;
+    font-size: 12px;
+    font-style: normal
+}
+
+code {
+    background: #f0f0f0;
+    padding: 2px 4px
+}
+
+.box {
+    margin-bottom: 40px
+}
+
+p {
+    line-height: 180%;
+    font-size: 14px
+}
+
+p:last-child {
+    margin-bottom: 0px
+}
+
+ul li, ol li {
+    margin: 5px 0px
+}
+
+table {
+    overflow: scroll;
+    width: 100%;
+    display: block
+}
+
+#api_list {
+    margin-top: 20px
+}
+
+#api_list table {
+    margin: 20px 0
+}
+
+#api_list .route td {
+    padding: 10px 0
+}
+
+#api_list .method {
+    font-weight: bold;
+    color: #999;
+    width: 80px
+}
+
+#api_list .path address {
+    color: #333;
+    background: #f0f0f0;
+    padding: 4px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px
+}
+
+#api_list .method_desc {
+    font-size: 14px
+}
+
+#api_list .method_desc .warning {
+    background: #fef6eb;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #a58263;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px
+}
+
+#api_list .method_desc .warning p {
+    font-size: 12px
+}
+
+#api_list .method_desc .warning p:first-child {
+    margin-top: 5px
+}
+
+#api_list .method_desc .warning p:last-child {
+    margin-bottom: 0px
+}
+
+#api_list .params {
+    margin-top: 10px;
+    width: 600px
+}
+
+#api_list .params tr.head td {
+    color: #999;
+    font-weight: bold
+}
+
+#api_list .params td {
+    padding: 6px;
+    border-top: 1px dashed #ddd
+}
+
+#api_list .params td.name {
+    width: 100px
+}
+
+#api_list .params td.type {
+    width: 80px
+}
+
+#api_list .params td.optional {
+    width: 50px
+}
+
+#api_list .params td.default {
+    width: 80px
+}
+
+#api_list .returns td {
+    padding: 6px;
+    border-top: 1px solid #ddd
+}
+</style>
+<div id="api_list">
+  <h2>API 列表</h2>
+  <% 
+    route_groups = TbAPI.routes.group_by { |g| (g.route_namespace.split("/").second || "Root").camelize }
+  %>
+  <h3>目录</h3>
+  <ul>
+    <% route_groups.each do |name, routes| %>
+    <li><a href="#route-<%= name %>"><%= name %></a></li>
+    <% end %>
+  </ul>
+  <% route_groups.each do |namespace, routes|%>
+    <h3 id="route-<%= namespace %>"><%= namespace %></h3>
+    <table class="table">
+      <tbody>
+      <% routes.each do |route| %>
+        <tr class="route">
+          <td class="method"><%= route.route_method %></td>
+          <% route_path = route.route_path.gsub("(.:format)",".json").gsub(":version","v1") %>
+          <td class="path"><address>http://DOMAIN/<%= route_path %></address></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2" class="method_desc">
+            <%= simple_format(route.route_description || "无说明") %>
+            <% if !route.route_notes.blank? %>
+            <div class="warning">
+              <%= simple_format route.route_notes %>
+            </div>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">
+            <% if route.route_params.is_a?(Hash) %>
+            <h4>参数</h4>
+            <table class="params">
+              <tr class="head">
+                <td class="name">参数名</td>
+                <td class="type">类型</td>
+                <td class="optional">必选</td>
+                <td class="default">默认值</td>
+                <td class="desc">说明</td>
+              </tr>
+              <% route.route_params.each do |name,desc| 
+                required = desc.is_a?(Hash) ? desc[:required] : false
+                summary = desc.is_a?(Hash) ? desc[:desc] : desc.to_s
+                type = desc.is_a?(Hash) ? desc[:type] : "String"
+                default_value = desc.is_a?(Hash) ? desc[:default] : "无"
+              %>                
+              <tr>
+                <td class="name"><%= name %></td>
+                <td class="type"><%= type %></td>
+                <td class="optional"><%= required ? "是" : "" %></td>
+                <td class="default"><%= default_value %></td>
+                <td class="desc"><%= summary || "无" %></td>
+              </tr>
+              <% end %>
+            </table>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan="2">
+            <% if route.route_object_fields.is_a?(Hash) %>
+            <h4>返回值</h4>
+            <table class="returns params">
+              <tr class="head">
+                <td class="name">字段</td>
+                <td class="type">类型</td>
+                <td class="desc">说明</td>
+              </tr>
+              <% route.route_object_fields.each do |key,value| %>                
+              <tr>
+                <td class="name"><%= key %></td>
+                <td class="type"><%= value[:type] %></td>
+                <td class="desc"><%= value[:desc] || "无" %></td>
+              </tr>
+              <% end %>
+            </table>
+            <% else %>
+            <p>
+              <%= route.route_object_fields %>
+            </p>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>

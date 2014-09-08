@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  journal_id: 1
+  title: MyString
+  note: MyText
+  checkin_time: 2014-08-24 21:47:23
+  longitude: MyString
+  latitude: MyString
+  poi: MyString
+
+two:
+  journal_id: 1
+  title: MyString
+  note: MyText
+  checkin_time: 2014-08-24 21:47:23
+  longitude: MyString
+  latitude: MyString
+  poi: MyString

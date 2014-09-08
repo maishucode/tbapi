@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @journal.user_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @journal.title %>
+</p>
+
+<p>
+  <b>Note:</b>
+  <%= @journal.note %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%= @journal.start_time %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%= @journal.end_time %>
+</p>
+
+<p>
+  <b>Is current:</b>
+  <%= @journal.is_current %>
+</p>
+
+<p>
+  <b>Checkins:</b>
+  <% @journal.checkins.each do |c| %>
+  <p>
+  <%=c.checkin_time%>: <%=c.title%> </br>
+  <%=c.note%>
+  </p>	  
+  <% end %>
+</p>
+
+
+<%= link_to 'Edit', edit_journal_path(@journal) %> |
+<%= link_to 'Back', journals_path %>

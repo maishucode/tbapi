@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Journal:</b>
+  <%= @checkin.journal_id %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @checkin.title %>
+</p>
+
+<p>
+  <b>Note:</b>
+  <%= @checkin.note %>
+</p>
+
+<p>
+  <b>Checkin time:</b>
+  <%= @checkin.checkin_time %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%= @checkin.longitude %>
+</p>
+
+<p>
+  <b>Latitude:</b>
+  <%= @checkin.latitude %>
+</p>
+
+<p>
+  <b>Poi:</b>
+  <%= @checkin.poi %>
+</p>
+
+
+<%= link_to 'Edit', edit_checkin_path(@checkin) %> |
+<%= link_to 'Back', checkins_path %>

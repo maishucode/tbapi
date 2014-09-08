@@ -1,0 +1,11 @@
+<h1>Test Upload Picture</h1>
+
+<p>
+	<%=form_tag "/api/pic/upload.json", "multipart"=>true do %>
+	   <input type="hidden" name="email" value="testuser@gmail.com">
+	   <input type="hidden" name="password" value="testuser">
+	   <p><input type="file" name="pic"></p>
+	   <p><input type="submit"> </p>
+	<% end %>
+</p>
+
